@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/exif-js/2.3.0/exif.min.js"></script>
+    <script src="rotate-compress-img.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            照片旋转等比例压缩示例
+        </div>
+        <div class="card-body m-auto">
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="card-footer">
+            <input type="file" accept="image/*" id="imgInput">
+            <label>最大宽度：</label>
+            <input type="number" placeholder="最大宽度" id="maxWidth" value="600">
+            <label>最大高度：</label>
+            <input type="number" placeholder="最大高度" id="maxHeight" value="600">
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#imgInput").on("change", function () {
+        var file = this.files[0];
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            var img = new Image();
+            img.src = reader.result;
+            img.onload = function () {
+                EXIF.getData(img, function () {
+                    rotateByOrientationAndCompressImg(img,
+                        canvas,
+                        this.exifdata.Orientation,
+                        $("#maxWidth").val(),
+                        $("#maxHeight").val()
+                    );
+                })
+            }
+        }
+    });
+</script>
+</body>
+</html>
